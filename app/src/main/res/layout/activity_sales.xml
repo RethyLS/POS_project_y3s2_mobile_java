@@ -19,9 +19,49 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/primary"
-                app:title="POS System"
-                app:titleTextColor="@android:color/white" />
+                android:background="@color/background"
+                app:title="POS"
+                app:titleTextColor="@android:color/black">
+
+                <!-- Cart Button with Badge in Toolbar -->
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="16dp">
+
+                    <Button
+                        android:id="@+id/btn_toolbar_cart"
+                        android:layout_width="48dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/button_primary"
+                        android:drawableStart="@android:drawable/ic_menu_view"
+                        android:drawablePadding="0dp"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text=""
+                        android:contentDescription="Shopping Cart" />
+
+                    <!-- Cart Badge on Toolbar Button -->
+                    <TextView
+                        android:id="@+id/tv_cart_badge_toolbar"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:background="@drawable/badge_circle"
+                        android:backgroundTint="@android:color/white"
+                        android:gravity="center"
+                        android:textColor="@android:color/black"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
+
+                </FrameLayout>
+
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -37,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
+                app:cardCornerRadius="24dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/card_background">
 
@@ -74,55 +114,99 @@
 
     </LinearLayout>
 
-    <!-- Floating Action Buttons for Cart -->
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <!-- Bottom Cart Action Panel -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cart_action_panel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:orientation="vertical">
+        android:layout_gravity="bottom"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@android:color/white"
+        android:visibility="gone">
 
-        <!-- Save Ticket Button -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_save_ticket"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:src="@android:drawable/ic_menu_save"
-            app:backgroundTint="@color/primary"
-            app:tint="@android:color/white"
-            android:contentDescription="Save Ticket" />
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
 
-        <!-- Cart Button with Badge -->
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_cart"
-                android:layout_width="wrap_content"
+            <!-- Save Cart Button with Badge -->
+            <FrameLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_view"
-                app:backgroundTint="@color/primary"
-                app:tint="@android:color/white"
-                android:contentDescription="View Cart" />
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp">
 
-            <!-- Cart Badge -->
-            <TextView
-                android:id="@+id/tv_cart_badge"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="top|end"
-                android:background="@drawable/cart_badge_background"
-                android:gravity="center"
-                android:text="0"
-                android:textColor="@android:color/white"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                <Button
+                    android:id="@+id/btn_save_cart"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Save Cart"
+                    android:textColor="@android:color/black"
+                    android:background="@drmawable/button_white_black_border"
+                    
+                    android:drawablePadding="8dp"
+                    android:gravity="center" />
 
-        </FrameLayout>
+                <!-- Save Cart Badge -->
+                <TextView
+                    android:id="@+id/tv_save_cart_badge"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/badge_circle_red"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
-    </LinearLayout>
+            </FrameLayout>
+
+            <!-- Checkout Button with Badge -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp">
+
+                <Button
+                    android:id="@+id/btn_checkout"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Checkout"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/button_primary"
+
+                    android:drawablePadding="8dp"
+                    android:gravity="center" />
+
+                <!-- Checkout Badge -->
+                <TextView
+                    android:id="@+id/tv_checkout_badge"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/badge_circle_red"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

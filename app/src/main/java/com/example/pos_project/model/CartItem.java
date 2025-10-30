@@ -3,13 +3,15 @@ package com.example.pos_project.model;
 public class CartItem {
     private int productId;
     private String productName;
+    private String productImage;
     private double unitPrice;
     private int quantity;
     private double totalPrice;
 
-    public CartItem(int productId, String productName, double unitPrice, int quantity) {
+    public CartItem(int productId, String productName, String productImage, double unitPrice, int quantity) {
         this.productId = productId;
         this.productName = productName;
+        this.productImage = productImage;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
         this.totalPrice = unitPrice * quantity;
@@ -21,6 +23,9 @@ public class CartItem {
 
     public String getProductName() { return productName; }
     public void setProductName(String productName) { this.productName = productName; }
+
+    public String getProductImage() { return productImage; }
+    public void setProductImage(String productImage) { this.productImage = productImage; }
 
     public double getUnitPrice() { return unitPrice; }
     public void setUnitPrice(double unitPrice) { 

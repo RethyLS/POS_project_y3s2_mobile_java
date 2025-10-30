@@ -17,7 +17,7 @@ import com.example.pos_project.model.User;
 
 @Database(
     entities = {User.class, Product.class, Sale.class, SaleItem.class},
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 public abstract class POSDatabase extends RoomDatabase {
@@ -31,12 +31,38 @@ public abstract class POSDatabase extends RoomDatabase {
     
     public static synchronized POSDatabase getInstance(Context context) {
         if (INSTANCE == null) {
-            INSTANCE = Room.databaseBuilder(
-                context.getApplicationContext(),
-                POSDatabase.class,
-                "pos_database"
-            ).build();
+            try {
+                INSTANCE = Room.databaseBuilder(
+                    context.getApplicationContext(),
+                    POSDatabase.class,
+                    "pos_database"
+                )
+                .fallbackToDestructiveMigration() // Handle schema changes gracefully
+                .build();
+            } catch (Exception e) {
+                // If database creation fails, try to clear and recreate
+                try {
+                    context.deleteDatabase("pos_database");
+                    INSTANCE = Room.databaseBuilder(
+                        context.getApplicationContext(),
+                        POSDatabase.class,
+                        "pos_database"
+                    )
+                    .fallbackToDestructiveMigration()
+                    .build();
+                } catch (Exception e2) {
+                    throw new RuntimeException("Unable to create database", e2);
+                }
+            }
         }
         return INSTANCE;
+    }
+
+    // Add method to reset database instance
+    public static synchronized void resetInstance() {
+        if (INSTANCE != null) {
+            INSTANCE.close();
+            INSTANCE = null;
+        }
     }
 }

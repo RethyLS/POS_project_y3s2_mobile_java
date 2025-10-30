@@ -1,6 +1,7 @@
 package com.example.pos_project.model;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "sale_items")
@@ -17,6 +18,7 @@ public class SaleItem {
     // Constructors
     public SaleItem() {}
 
+    @Ignore
     public SaleItem(int saleId, int productId, String productName, 
                     double unitPrice, int quantity) {
         this.saleId = saleId;

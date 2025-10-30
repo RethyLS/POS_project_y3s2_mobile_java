@@ -3,9 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#C0E863</color>
-    <color name="primary_color">#C0E863</color>
     <color name="primary_dark">#A8D045</color>
-    <color name="secondary">#FF9800</color>
     <color name="accent">#C0E863</color>
     <color name="background">#F0F0F0</color>
     <color name="surface">#FFFFFF</color>

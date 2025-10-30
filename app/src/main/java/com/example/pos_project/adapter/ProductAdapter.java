@@ -66,7 +66,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         public void bind(Product product) {
             tvProductName.setText(product.getName());
-            tvProductCategory.setText(product.getCategory());
+            tvProductCategory.setText(product.getCategoryName());
             tvProductPrice.setText(String.format("$%.2f", product.getPrice()));
             tvProductQuantity.setText("Qty: " + product.getQuantity());
             

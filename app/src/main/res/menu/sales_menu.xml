@@ -9,18 +9,8 @@
         app:showAsAction="always" />
         
     <item
-        android:id="@+id/action_products"
-        android:title="Products"
-        app:showAsAction="never" />
-        
-    <item
-        android:id="@+id/action_users"
-        android:title="Users"
-        app:showAsAction="never" />
-        
-    <item
-        android:id="@+id/action_reports"
-        android:title="Reports"
+        android:id="@+id/action_logout"
+        android:title="Logout"
         app:showAsAction="never" />
         
 </menu>

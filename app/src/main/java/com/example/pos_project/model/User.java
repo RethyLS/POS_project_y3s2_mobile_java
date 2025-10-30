@@ -1,32 +1,71 @@
 package com.example.pos_project.model;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "users")
 public class User {
     @PrimaryKey(autoGenerate = true)
+    @SerializedName("id")
     private int id;
+    
+    @SerializedName("name")
+    private String name;
+    
+    @SerializedName("email")
+    private String email;
+    
+    @SerializedName("username")
     private String username;
-    private String password;
+    
+    private String password; // Not serialized for security
+    
+    @SerializedName("role")
     private String role; // "admin" or "cashier"
-    private String fullName;
-    private boolean isActive;
+    
+    private String fullName; // Local field, mapped from name
+    
+    @SerializedName("email_verified_at")
+    private String emailVerifiedAt;
+    
+    @SerializedName("created_at")
+    private String createdAt;
+    
+    @SerializedName("updated_at")
+    private String updatedAt;
+    
+    private boolean isActive = true; // Local field
 
     // Constructors
     public User() {}
 
+    @Ignore
     public User(String username, String password, String role, String fullName) {
         this.username = username;
         this.password = password;
         this.role = role;
         this.fullName = fullName;
+        this.name = fullName;
         this.isActive = true;
     }
 
     // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { 
+        this.name = name;
+        // Also update fullName for local compatibility
+        if (this.fullName == null || this.fullName.isEmpty()) {
+            this.fullName = name;
+        }
+    }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -37,8 +76,23 @@ public class User {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getFullName() { return fullName != null ? fullName : name; }
+    public void setFullName(String fullName) { 
+        this.fullName = fullName;
+        // Also update name for API compatibility
+        if (this.name == null || this.name.isEmpty()) {
+            this.name = fullName;
+        }
+    }
+
+    public String getEmailVerifiedAt() { return emailVerifiedAt; }
+    public void setEmailVerifiedAt(String emailVerifiedAt) { this.emailVerifiedAt = emailVerifiedAt; }
+
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+
+    public String getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { isActive = active; }

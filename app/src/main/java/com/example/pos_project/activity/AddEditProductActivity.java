@@ -84,7 +84,7 @@ public class AddEditProductActivity extends AppCompatActivity {
             if (product != null) {
                 runOnUiThread(() -> {
                     etProductName.setText(product.getName());
-                    etCategory.setText(product.getCategory());
+                    etCategory.setText(product.getCategoryName());
                     etPrice.setText(String.valueOf(product.getPrice()));
                     etQuantity.setText(String.valueOf(product.getQuantity()));
                     etBarcode.setText(product.getBarcode());
@@ -144,7 +144,7 @@ public class AddEditProductActivity extends AppCompatActivity {
                         Product product = database.productDao().getProductById(productId);
                         if (product != null) {
                             product.setName(name);
-                            product.setCategory(category);
+                            product.setCategoryName(category);
                             product.setPrice(price);
                             product.setQuantity(quantity);
                             product.setBarcode(barcode.isEmpty() ? null : barcode);
@@ -152,7 +152,8 @@ public class AddEditProductActivity extends AppCompatActivity {
                             database.productDao().update(product);
                         }
                     } else {
-                        Product product = new Product(name, description, price, quantity, category);
+                        Product product = new Product(name, description, price, quantity, barcode);
+                        product.setCategoryName(category);
                         product.setBarcode(barcode.isEmpty() ? null : barcode);
                         database.productDao().insert(product);
                     }

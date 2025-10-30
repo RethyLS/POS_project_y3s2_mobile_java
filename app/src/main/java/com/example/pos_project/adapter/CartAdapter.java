@@ -4,11 +4,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.pos_project.R;
 import com.example.pos_project.model.CartItem;
 
@@ -50,11 +53,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     }
 
     class CartViewHolder extends RecyclerView.ViewHolder {
+        private ImageView ivProductImage;
         private TextView tvProductName, tvUnitPrice, tvQuantity, tvTotalPrice;
         private Button btnIncrease, btnDecrease, btnRemove;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
+            ivProductImage = itemView.findViewById(R.id.iv_cart_product_image);
             tvProductName = itemView.findViewById(R.id.tv_cart_product_name);
             tvUnitPrice = itemView.findViewById(R.id.tv_cart_unit_price);
             tvQuantity = itemView.findViewById(R.id.tv_cart_quantity);
@@ -69,6 +74,26 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             tvUnitPrice.setText(String.format("$%.2f each", item.getUnitPrice()));
             tvQuantity.setText(String.valueOf(item.getQuantity()));
             tvTotalPrice.setText(String.format("$%.2f", item.getTotalPrice()));
+
+            // Load product image
+            String baseUrl = "http://10.0.2.2:8000/storage/";
+            String imageUrl = item.getProductImage();
+            
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                // If image starts with http, use it directly, otherwise prepend base URL
+                String fullImageUrl = imageUrl.startsWith("http") ? imageUrl : baseUrl + imageUrl;
+                
+                Glide.with(itemView.getContext())
+                    .load(fullImageUrl)
+                    .apply(new RequestOptions()
+                        .placeholder(R.drawable.ic_image_placeholder)
+                        .error(R.drawable.ic_image_placeholder)
+                        .centerCrop())
+                    .into(ivProductImage);
+            } else {
+                // Set placeholder if no image
+                ivProductImage.setImageResource(R.drawable.ic_image_placeholder);
+            }
 
             btnIncrease.setOnClickListener(v -> {
                 if (listener != null) {

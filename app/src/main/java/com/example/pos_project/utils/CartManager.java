@@ -20,6 +20,14 @@ public class CartManager {
         return instance;
     }
 
+    // Add method to reset the singleton instance (useful for app restart scenarios)
+    public static synchronized void resetInstance() {
+        if (instance != null) {
+            instance.clearCart();
+            instance = null;
+        }
+    }
+
     public List<CartItem> getCartItems() {
         return new ArrayList<>(cartItems);
     }

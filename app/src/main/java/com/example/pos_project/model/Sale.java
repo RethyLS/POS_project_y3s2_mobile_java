@@ -1,6 +1,7 @@
 package com.example.pos_project.model;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "sales")
@@ -18,6 +19,7 @@ public class Sale {
     // Constructors
     public Sale() {}
 
+    @Ignore
     public Sale(String saleDate, double totalAmount, double paidAmount, 
                 String paymentMethod, int userId, String customerName) {
         this.saleDate = saleDate;

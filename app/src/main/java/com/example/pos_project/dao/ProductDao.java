@@ -30,12 +30,21 @@ public interface ProductDao {
     @Query("SELECT * FROM products WHERE barcode = :barcode AND isActive = 1")
     Product getProductByBarcode(String barcode);
 
-    @Query("SELECT * FROM products WHERE category = :category AND isActive = 1")
+    @Query("SELECT * FROM products WHERE categoryName = :category AND isActive = 1")
     List<Product> getProductsByCategory(String category);
 
-    @Query("SELECT DISTINCT category FROM products WHERE isActive = 1")
+    @Query("SELECT DISTINCT categoryName FROM products WHERE isActive = 1")
     List<String> getAllCategories();
 
     @Query("UPDATE products SET quantity = quantity - :soldQuantity WHERE id = :productId")
     void reduceProductQuantity(int productId, int soldQuantity);
+
+    @Query("DELETE FROM products")
+    void deleteAll();
+
+    @Query("DELETE FROM products WHERE id = :productId")
+    void deleteById(int productId);
+
+    @Insert
+    void insertAll(Product... products);
 }

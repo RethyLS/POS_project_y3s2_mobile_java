@@ -18,6 +18,7 @@ import com.example.pos_project.R;
 import com.example.pos_project.adapter.ProductAdapter;
 import com.example.pos_project.database.POSDatabase;
 import com.example.pos_project.model.Product;
+import com.example.pos_project.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ public class ProductActivity extends AppCompatActivity implements ProductAdapter
     private List<Product> filteredList;
     
     private POSDatabase database;
+    private ProductRepository productRepository;
     private ExecutorService executor;
 
     @Override
@@ -74,6 +76,7 @@ public class ProductActivity extends AppCompatActivity implements ProductAdapter
 
     private void initDatabase() {
         database = POSDatabase.getInstance(this);
+        productRepository = new ProductRepository(this);
         executor = Executors.newFixedThreadPool(4);
     }
 
@@ -114,7 +117,7 @@ public class ProductActivity extends AppCompatActivity implements ProductAdapter
         } else {
             for (Product product : productList) {
                 if (product.getName().toLowerCase().contains(query.toLowerCase()) ||
-                    product.getCategory().toLowerCase().contains(query.toLowerCase())) {
+                    product.getCategoryName().toLowerCase().contains(query.toLowerCase())) {
                     filteredList.add(product);
                 }
             }
@@ -123,15 +126,35 @@ public class ProductActivity extends AppCompatActivity implements ProductAdapter
     }
 
     private void loadProducts() {
-        executor.execute(() -> {
-            List<Product> products = database.productDao().getAllActiveProducts();
-            runOnUiThread(() -> {
-                productList.clear();
-                productList.addAll(products);
-                filteredList.clear();
-                filteredList.addAll(products);
-                adapter.notifyDataSetChanged();
-            });
+        productRepository.getAllProducts(new ProductRepository.ProductCallback() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                runOnUiThread(() -> {
+                    productList.clear();
+                    productList.addAll(products);
+                    filteredList.clear();
+                    filteredList.addAll(products);
+                    adapter.notifyDataSetChanged();
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                runOnUiThread(() -> {
+                    Toast.makeText(ProductActivity.this, "Error loading products: " + error, Toast.LENGTH_LONG).show();
+                    // Fallback to local database if API fails
+                    executor.execute(() -> {
+                        List<Product> products = database.productDao().getAllActiveProducts();
+                        runOnUiThread(() -> {
+                            productList.clear();
+                            productList.addAll(products);
+                            filteredList.clear();
+                            filteredList.addAll(products);
+                            adapter.notifyDataSetChanged();
+                        });
+                    });
+                });
+            }
         });
     }
 
@@ -153,13 +176,30 @@ public class ProductActivity extends AppCompatActivity implements ProductAdapter
     }
 
     private void deleteProduct(Product product) {
-        executor.execute(() -> {
-            product.setActive(false);
-            database.productDao().update(product);
-            runOnUiThread(() -> {
-                Toast.makeText(this, "Product deleted successfully", Toast.LENGTH_SHORT).show();
-                loadProducts();
-            });
+        productRepository.deleteProduct(product.getId(), new ProductRepository.SimpleCallback() {
+            @Override
+            public void onSuccess(String message) {
+                runOnUiThread(() -> {
+                    Toast.makeText(ProductActivity.this, message, Toast.LENGTH_SHORT).show();
+                    loadProducts();
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                runOnUiThread(() -> {
+                    Toast.makeText(ProductActivity.this, "Error deleting product: " + error, Toast.LENGTH_LONG).show();
+                    // Fallback to local deletion
+                    executor.execute(() -> {
+                        product.setActive(false);
+                        database.productDao().update(product);
+                        runOnUiThread(() -> {
+                            Toast.makeText(ProductActivity.this, "Product deleted locally", Toast.LENGTH_SHORT).show();
+                            loadProducts();
+                        });
+                    });
+                });
+            }
         });
     }
 
